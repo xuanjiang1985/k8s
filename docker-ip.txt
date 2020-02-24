@@ -1,0 +1,43 @@
+docker-vps
+----------------
+192.168.83.128 
+root xuanjiang
+
+
+network config
+----------------
+vim /etc/sysconfig/network-scripts/ifcfg-ens33
+
+BOOTPROTO=static
+
+ONBOOT=yes
+IPADDR=192.168.83.128
+NETMASK=255.255.255.0
+GATEWAY=192.168.83.1
+DNS1=8.8.8.8
+
+
+k8s master install
+-----------------
+kubeadm init \
+--apiserver-advertise-address=192.168.83.140 \
+--image-repository registry.aliyuncs.com/google_containers \
+--kubernetes-version v1.14.0 \
+--service-cidr=10.1.0.0/16 \
+--pod-network-cidr=10.244.0.0/16
+
+master token
+----------------
+kubeadm join 192.168.83.140:6443 --token 9gjmfd.bya3x0kgh3pet8he \
+    --discovery-token-ca-cert-hash sha256:32f59330ce3f7d64c2d4e3b1e440264be41cb9ddd60e77339561c4a0af47451b
+
+node join master
+-------------------
+kubeadm reset
+
+iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+
+
+nfs client test
+--------------
+showmount -e 192.168.83.143
