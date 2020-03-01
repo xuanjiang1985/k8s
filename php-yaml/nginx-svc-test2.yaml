@@ -32,7 +32,15 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:                      
         - name: http                
-          containerPort: 80         
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /index.php/version
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 2
+          failureThreshold: 10         
         volumeMounts:               
         - name: nginx-config        
           mountPath: /etc/nginx/conf.d

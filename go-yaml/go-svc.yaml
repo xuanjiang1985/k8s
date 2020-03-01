@@ -17,7 +17,7 @@ kind: Deployment
 metadata:                           
   name: go-deploy             
 spec:                               
-  replicas: 3                       
+  replicas: 1                       
   selector:                         
     matchLabels:                    
       name: goapp                   
@@ -33,3 +33,11 @@ spec:
         ports:                      
         - name: http                
           containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /user/1
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 2
+          failureThreshold: 3
