@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php72-deploy-cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: php-lumen-cron
+  template:
+    metadata:
+      labels:
+        name: php-lumen-cron
+    spec:
+      containers:
+      - name: php
+        image: crunchgeek/php-fpm:7.2
+        command:
+        - /bin/bash
+        - /var/www/html/cronJob.sh
+        volumeMounts:
+        - name: php-code
+          mountPath: /var/www/html/
+      volumes:
+      - name: php-code
+        nfs:
+          path: /home/data
+          server: 192.168.83.143
